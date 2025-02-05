@@ -1,0 +1,86 @@
+version: "3.8"
+services:
+  #PHP Service
+  php:
+    build:
+      args:
+        user: php
+        uid: 1000
+      context: .
+      dockerfile: .docker/Dockerfile
+    image: php8.3
+    restart: unless-stopped
+    working_dir: /var/www/
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    volumes:
+      - ./:/var/www
+      - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    
+  node:
+    image: node:20.10
+    user: node
+    working_dir: /assets
+    ports:
+      - 5173:5173
+    volumes:
+      - ./:/assets
+    command: npm run dev
+
+  #MySQL Service
+  MYSQL:
+    image: mysql:8.0
+    container_name: MYSQL
+    restart: unless-stopped
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      # MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_DATABASE}"
+    ports:
+      - "3307:3306"
+      
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    
+  #Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./.docker/nginx/conf.d/:/etc/nginx/conf.d/
+    
+  # phpmyadmin service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    container_name: phpmyadmin
+    depends_on:
+      - MYSQL
+    ports:
+      - "4040:80"
+    environment:
+      PMA_ARBITRARY: 1
+
+  # redis service
+  redis:
+    image: redis:5
+    volumes:
+      - redisdata:/data
+
+
+#Volumes
+volumes:
+  mysql_data:
+  # redis
+  redisdata:
