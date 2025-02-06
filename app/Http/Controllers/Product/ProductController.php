@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function allProducts(Request $request): JsonResponse
     {
-        $allProducts = Product::all();
-        return ApiResponseHelper::successResponse(ProductDetailsResource::collection($allProducts));
+        $allProducts = Product::latest('id')->first();
+        return ApiResponseHelper::successResponse(new ProductDetailsResource($allProducts));
     }
 }
