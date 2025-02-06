@@ -1,4 +1,4 @@
-## run migration
+## install dependency
 
 composer install
 
