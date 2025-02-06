@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CurrencyEnum;
 use App\Enums\FacebookMarketplaceCategory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -25,7 +26,7 @@ class Product extends Model
 
     protected $casts = [
         'category' => FacebookMarketplaceCategory::class,
-        'currency' => FacebookMarketplaceCategory::class
+        'currency' => CurrencyEnum::class
     ];
 
     public function imageUrl(): Attribute

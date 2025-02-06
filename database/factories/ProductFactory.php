@@ -22,10 +22,10 @@ class ProductFactory extends Factory
             'name' => fake()->name(),
             'desciption' => fake()->sentence(),
             'price' => fake()->randomFloat(2, 5, 1000), // Random price between 5 and 1000
-            'currency' => fake()->randomElement(CurrencyEnum::values()),
+            'currency' => CurrencyEnum::EUR->value,
             'image' => null,
             'category' => fake()->randomElement(FacebookMarketplaceCategory::values()),
-            'location' => 'french'
+            'location' => 'France'
         ];
     }
 }
